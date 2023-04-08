@@ -31,3 +31,18 @@ const crearDeck = () =>{
 
 
 crearDeck();
+
+//Esta funcion me permite tomar una carta
+const pedirCarta = () =>{
+
+    if( deck.length === 0){
+        throw 'No hay cartas en el deck';
+    }
+
+    const carta = deck.pop();
+    console.log(carta);
+    return carta;
+}
+
+deck = [];
+pedirCarta();
