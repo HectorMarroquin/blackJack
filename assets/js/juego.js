@@ -15,6 +15,8 @@ let puntosJugador = 0,
 
 
 const btnPedir = document.querySelector('#btnPedir');
+
+const divCartasJugador = document.querySelector('#jugador-cartas');
 const puntosHTML = document.querySelectorAll('small');
 
 //esta funcion crea un nuevo deck
@@ -26,7 +28,7 @@ const crearDeck = () =>{
         }
     }
 
-    for (let tipo of especiales) {
+    for (let tipo of tipos) {
         for (let esp of especiales) {
             deck.push(esp + tipo);
         }
@@ -64,13 +66,22 @@ const valorCarta = (carta) =>{
 
 btnPedir.addEventListener('click', () =>{
 
-    console.log('prueba');
     const carta = pedirCarta();
 
     puntosJugador = puntosJugador + valorCarta( carta );
-
-    console.log(puntosJugador);
-
     puntosHTML[0].innerText = puntosJugador;
+
+    const imgCarta = document.createElement('img');
+    imgCarta.src = `assets/cartas/${ carta }.png`;
+    imgCarta.classList.add('cartas');
+    divCartasJugador.append(imgCarta);
+
+    if( puntosJugador > 21 ){
+        console.warn('Lo siento mucho, perdiste');
+        btnPedir.disabled = true;
+    }else if( puntosJugador === 21 ){
+        console.warn('21, Genail!');
+        btnPedir.disabled = true;
+    }
 
 });
