@@ -1,4 +1,4 @@
-( () =>{
+const miModulo = (() =>{
     'use strict'
 
     
@@ -20,9 +20,16 @@
      //Esta funcion inicializa el juego
     const inicializarJuego = ( numJugadores = 2 ) =>{
        deck = crearDeck();
+       puntosJugadores = [];
        for(let i = 0; i< numJugadores; i++){
             puntosJugadores.push(0);
        }
+        puntosHTML.forEach( elem => elem.innerText = 0 );
+        divCartasJugadores.forEach( elem => elem.innerHTML = '' );
+
+        btnDetener.disabled = false;
+        btnPedir.disabled   = false;
+
     };
 
     //esta funcion crea un nuevo deck
@@ -53,7 +60,7 @@
     }
 
     const valorCarta = (carta) =>{
-        const valor = carta.substring(0, carta.length-1);
+        const valor = carta.substring(0, carta.length - 1);
         return( isNaN( valor ) ) ?
                 ( valor === 'A' ) ? 11 : 10
                 : valor * 1;
@@ -73,28 +80,14 @@
         divCartasJugadores[turno].append(imgCarta);
 
     }
+    const determinarGanador = () =>{
+        // destructuracion, guarda valores de array en dos variables
+        const [ puntosMinimos, puntosComputadora ] = puntosJugadores;
 
-    // Turno de la computadora
-    const turnoComputadora = (puntosMinimo) =>{
-        let puntosComputadora = 0;
-        do{
-        const carta = pedirCarta();
-        puntosComputadora = acumularPuntos( carta, puntosJugadores.length -1);
-        
-        crearCarta(carta, puntosJugadores.length -1);
-
-        if( puntosMinimo > 21){
-            break;
-        }
-
-        }while( (puntosComputadora < puntosMinimo) && (puntosMinimo <= 21) );
-
-
-        setTimeout( () =>{
-            
-            if( puntosComputadora === puntosMinimo ){
+        setTimeout( () =>{ 
+            if( puntosComputadora === puntosMinimos ){
                 alert('Nadie Gana :c');
-            }else if( puntosMinimo > 21){
+            }else if( puntosMinimos > 21){
                 alert('Computadora Gana');
             }else if( puntosComputadora > 21){
                 alert('Jugador Gana!!');
@@ -104,10 +97,21 @@
         }, 300 );
 
     }
+    // Turno de la computadora
+    const turnoComputadora = (puntosMinimos) =>{
+        let puntosComputadora = 0;
 
+        do{
+        const carta = pedirCarta();
+        puntosComputadora = acumularPuntos( carta, puntosJugadores.length - 1);
+        crearCarta(carta, puntosJugadores.length - 1);
+
+        }while( (puntosComputadora < puntosMinimos) && (puntosMinimos <= 21) );
+
+        determinarGanador();
+    }
 
     // Eventos
-
     btnPedir.addEventListener('click', () =>{
 
         const carta = pedirCarta();
@@ -117,12 +121,13 @@
 
         if( puntosJugador > 21 ){
             console.warn('Lo siento mucho, perdiste');
-            btnPedir.disabled = true;
+            btnPedir.disabled   = true;
             btnDetener.disabled = true;
-            turnoComputadora(puntosJugador);
+            turnoComputadora( puntosJugador );
+
         }else if( puntosJugador === 21 ){
             console.warn('21, Genial!');
-            btnPedir.disabled = true;
+            btnPedir.disabled   = true;
             btnDetener.disabled = true;
             turnoComputadora( puntosJugador );
         }
@@ -134,31 +139,19 @@
         btnDetener.disabled = true;
         btnPedir.disabled   = true;
 
-        turnoComputadora( puntosJugador );
+        turnoComputadora( puntosJugadores[0] );
 
     });
 
-    btnNuevo.addEventListener( 'click', () =>{
+    // btnNuevo.addEventListener( 'click', () =>{
 
-        console.clear();
-        inicializarJuego();
-        // deck = [];
-        // deck = crearDeck();
+    //     inicializarJuego();
 
-        // puntosJugador     = 0;
-        // puntosComputadora = 0;
-        
-        // btnDetener.disabled = false;
-        // btnPedir.disabled   = false;
+    // });
 
-        // puntosHTML[0].innerText = 0;
-        // puntosHTML[1].innerText = 0;
-
-        // divCartasComputadora.innerHTML = '';
-        // divCartasJugador.innerHTML      = '';
-
-    });
-
+    return {
+        'nuevoJuego' : inicializarJuego // hacer publico mi funcion 
+    };
 
 })();
 
